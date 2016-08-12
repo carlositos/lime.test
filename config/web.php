@@ -6,9 +6,11 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'name' => 'Lime Consulting',
+    'language' => 'en',
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+            'baseUrl' => '',
             'cookieValidationKey' => 'kvv1jMVSM5xi58iCJZlupckLeOyvgl31',
         ],
         'cache' => [
@@ -38,15 +40,22 @@ $config = [
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
-        /*
+
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '' => 'parser/index',
+                '<action>'=>'parser/<action>',
             ],
         ],
-        */
+
     ],
+    'modules' => [
+		'gridview' =>  [
+	        'class' => '\kartik\grid\Module'
+	    ]
+	],
     'params' => $params,
 ];
 
