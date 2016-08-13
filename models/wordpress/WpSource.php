@@ -29,7 +29,10 @@ class WpSource extends Sources
 		'wp_wp_rp_tags',
 		'wp_formcraft_b_views',
 		'wp_formcraft_b_submissions',
-		'wp_formcraft_b_forms'
+		'wp_formcraft_b_forms',
+		'wp_ratings',
+		'wp_top_ten_daily',
+		'wp_termmeta'
 	];
 	
 	public function copyDataToGlobalTables($sourceId)
@@ -37,12 +40,17 @@ class WpSource extends Sources
 		//copy data to global posts table
 		$posts = TmpWpPosts::find()->all();
 		foreach ($posts as $oldPost) {
-			$newPost = new GlobalWpPosts();
-			$newPost->post_id = $oldPost->ID;
-			$newPost->source_id = $sourceId;
-			$newPost->post_title = $oldPost->post_title;
+			//if such row does not exists in general table, lets save all data
+			if(!GlobalWpPosts::find()->where(['source_id'=>$sourceId, 'post_id'=>$oldPost->ID])->exists())
+			{
+				$newPost = new GlobalWpPosts();
+				$newPost->post_id = $oldPost->ID;
+				$newPost->source_id = $sourceId;
+				$newPost->post_title = $oldPost->post_title;
+				
+				$newPost->save();
+			}
 			
-			$newPost->save();
 		}
 	}
 	
@@ -50,7 +58,7 @@ class WpSource extends Sources
 	{
 		foreach($this->_wpTables as $tableName){
 			if(Yii::$app->db->schema->getTableSchema($tableName) !== null)
-				Yii::$app->db->createCommand()->truncateTable($tableName)->execute();
+				Yii::$app->db->createCommand()->dropTable($tableName)->execute();
 		}	
 	}
 	

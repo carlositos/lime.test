@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\web\View;
+use nirvana\showloading\ShowLoadingAsset;
+ShowLoadingAsset::register($this);
 
 /* @var $this yii\web\View */
 
@@ -12,7 +14,7 @@ $this->title = 'WP sql db to RSS';
 
     <div class="jumbotron">
 
-        <p class="lead">Upload wordpress databases files</p>
+        <p class="lead">Wordpress databases files</p>
 			
 		<?php
 		$gridColumns = [
@@ -52,18 +54,26 @@ $this->registerJs("
     	$('#generateFiles').click(function(){
     		var keys = $('#w0').yiiGridView('getSelectedRows');
     		
+    		if(keys.length == 0)
+    		{
+    			BootstrapDialog.alert('Please select at least one database to parse');
+    			return false;
+    		}
+    		
     		$.ajax({
 			  type: 'POST',
 		      url: '/ajax/generate-xml-links',
 		      data: {keys: keys},
+		      beforeSend: function(){
+		      	  $('#w0').showLoading()
+			  },
 		      success: function(data){
 		          BootstrapDialog.alert(data);
-		      }    
-		  });
-    		
-    		console.log(keys);
-
-    		
+		      },
+		      complete: function(){
+		      	  $('#w0').hideLoading()
+			  }
+		  	});
     	})
     	
  	});
