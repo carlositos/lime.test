@@ -6,6 +6,7 @@ use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
 use yii\web\UploadedFile;
+use yii\helpers\Url;
 
 class UploadController extends Controller
 {
@@ -16,10 +17,9 @@ class UploadController extends Controller
 
         if (Yii::$app->request->isPost) {
             $model->sqlFiles = UploadedFile::getInstances($model, 'sqlFiles');
-
-			
+	
             if ($model->upload()) {
-                return $this->redirect(['/parser/index']);
+                return $this->redirect(Url::to(['/parser/index']));
             }
         }
 

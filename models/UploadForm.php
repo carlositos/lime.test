@@ -22,7 +22,7 @@ class UploadForm extends Model
     {
         if ($this->validate()) { 
             foreach ($this->sqlFiles as $file) {
-                $file->saveAs('uploads/' . $file->baseName . '.' . $file->extension);
+                $file->saveAs(Yii::$app->params['sqlFilesStorage'].'/' . $file->baseName . '.' . $file->extension);
 				$source = new Sources();
 				$source->filename = $file->baseName;
 				$source->save();

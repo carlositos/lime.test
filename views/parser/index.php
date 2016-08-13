@@ -54,7 +54,7 @@ $this->registerJs("
     		
     		$.ajax({
 			  type: 'POST',
-		      url: '/ajax/generate-xml-files',
+		      url: '/ajax/generate-xml-links',
 		      data: {keys: keys},
 		      success: function(data){
 		          BootstrapDialog.alert(data);
