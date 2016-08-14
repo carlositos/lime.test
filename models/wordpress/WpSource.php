@@ -33,10 +33,20 @@ class WpSource extends Sources
 				$newPost->source_id = $sourceId;
 				$newPost->link = $this->getPostLink($oldPost->ID, $siteUrl, $oldPost->post_name, $oldPost->post_type);
 				$newPost->creator = $oldPost->author->user_login;
-				$newPost->post_title = $oldPost->post_title;
 				$newPost->post_date = $oldPost->post_date;
 				$newPost->post_date_gmt = $oldPost->post_date_gmt;
 				$newPost->post_content = $this->clearContent($oldPost->post_content);
+				$newPost->post_title = $oldPost->post_title;
+				$newPost->post_excerpt = $oldPost->post_excerpt;
+				$newPost->post_status = $oldPost->post_status;
+				$newPost->comment_status = $oldPost->comment_status;
+				$newPost->ping_status = $oldPost->ping_status;
+				$newPost->post_password = $oldPost->post_password;
+				$newPost->post_name = $oldPost->post_name;
+				$newPost->post_parent = $oldPost->post_parent;
+				$newPost->guid = $oldPost->guid;
+				$newPost->menu_order = $oldPost->menu_order;
+				$newPost->post_type = $oldPost->post_type;
 				
 				$newPost->save();
 			}

@@ -22,7 +22,7 @@ class AjaxController extends Controller
 	{
 		$this->layout = false;
 		$keys = Yii::$app->request->post('keys');
-		$filenames = [];
+		$siteUrls = [];
 		
 		foreach($keys as $sourceId)
 		{
@@ -31,10 +31,10 @@ class AjaxController extends Controller
 			$db->copyDataToGlobalTables($sourceId);
 			$db->dropTmpTables();
 			
-			$filenames[] = $db->filename;
+			$siteUrls[$sourceId] = $db->siteurl;
 		}
 		
-		return $this->render('_xmlListing', ['filenames' => $filenames]);
+		return $this->render('_xmlListing', ['siteUrls' => $siteUrls]);
 	}
 	
 }

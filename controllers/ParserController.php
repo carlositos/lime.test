@@ -89,6 +89,6 @@ class ParserController extends Controller
 	
 	public function actionTest()
 	{
-		
+		print_r(GlobalWpPosts::find()->count());
 	}
 }

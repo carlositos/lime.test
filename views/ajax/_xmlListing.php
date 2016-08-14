@@ -1,4 +1,9 @@
+<?php
+use yii\helpers\Url;
+?>
+
 <ul>
-	<li><a href="#">Link 1</a></li>
-	<li><a href="#">Link 2</a></li>
+	<?php foreach($siteUrls as $key => $url):?>
+	<li><?=$url?> (<a href="<?=Url::to(['site/rss', 'id'=>$key])?>" target="_blank">download xml</a>)</li>
+	<?php endforeach;?>
 </ul>
