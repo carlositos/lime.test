@@ -6,37 +6,22 @@ use Yii;
 use yii\db\ActiveRecord;
 use yii\web\NotFoundHttpException;
 use app\models\Sources;
+use app\components\ContentHelper;
 
 class WpSource extends Sources
 {
-	private $_wpTables = [
-		'wp_commentmeta',
-		'wp_comments',
-		'wp_links',
-		'wp_options',
-		'wp_postmeta',
-		'wp_posts',
-		'wp_seo_title_tag_category',
-		'wp_seo_title_tag_tag',
-		'wp_seo_title_tag_url',
-		'wp_terms',
-		'wp_term_relationships',
-		'wp_term_taxonomy',
-		'wp_usermeta',
-		'wp_users',
-		'wp_nxs_log',
-		'wp_yarpp_related_cache',
-		'wp_wp_rp_tags',
-		'wp_formcraft_b_views',
-		'wp_formcraft_b_submissions',
-		'wp_formcraft_b_forms',
-		'wp_ratings',
-		'wp_top_ten_daily',
-		'wp_termmeta'
+	private $_globalWpTables = [
+		'global_wp_postmeta',
+		'global_wp_posts',
+		'sources',
 	];
 	
 	public function copyDataToGlobalTables($sourceId)
 	{
+		//saving siteUrl into sources table (in future, maybe, we can pass more data)
+		$siteUrl = TmpWpOptions::find()->where(['option_name'=>'siteurl'])->one()->option_value;
+		$this->updateData($sourceId, $siteUrl);
+		
 		//copy data to global posts table
 		$posts = TmpWpPosts::find()->all();
 		foreach ($posts as $oldPost) {
@@ -46,20 +31,63 @@ class WpSource extends Sources
 				$newPost = new GlobalWpPosts();
 				$newPost->post_id = $oldPost->ID;
 				$newPost->source_id = $sourceId;
+				$newPost->link = $this->getPostLink($oldPost->ID, $siteUrl, $oldPost->post_name, $oldPost->post_type);
+				$newPost->creator = $oldPost->author->user_login;
 				$newPost->post_title = $oldPost->post_title;
+				$newPost->post_date = $oldPost->post_date;
+				$newPost->post_date_gmt = $oldPost->post_date_gmt;
+				$newPost->post_content = $this->clearContent($oldPost->post_content);
 				
 				$newPost->save();
 			}
-			
 		}
 	}
 	
-	public function truncateTmpTables()
+	private function updateData($sourceId, $siteUrl)
 	{
-		foreach($this->_wpTables as $tableName){
-			if(Yii::$app->db->schema->getTableSchema($tableName) !== null)
+		$siteUrl = TmpWpOptions::find()->where(['option_name'=>'siteurl'])->one()->option_value;
+		$source = WpSource::findOne($sourceId);
+		$source->siteurl = $siteUrl;
+		$source->save();
+	}
+	
+	public function dropTmpTables()
+	{
+		foreach(Yii::$app->db->schema->tableNames as $tableName){
+			if(!in_array($tableName, $this->_globalWpTables))
 				Yii::$app->db->createCommand()->dropTable($tableName)->execute();
-		}	
+		}
+	}
+	
+	private function getPostLink($postId, $siteUrl, $postName, $postType)
+	{
+		switch ($postType) {
+			case 'post':
+				$permalink = $siteUrl."/".$postName.'/';	
+				break;
+			
+			case 'page':
+				$permalink = $siteUrl."/".$postName.'/';
+				break;
+				
+			case 'attachment':
+				$permalink = $siteUrl."?attachment_id=".$postId;	
+				break;
+			
+			default:
+				$permalink = $siteUrl."?p=".$postId;
+				break;
+		}
+			
+		return $permalink;
+	}
+	
+	private function clearContent($content)
+	{
+		$content = ContentHelper::clearImgs($content);
+		$content = ContentHelper::clearLinks($content);
+		
+		return $content;
 	}
 	
 }

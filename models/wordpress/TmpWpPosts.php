@@ -89,4 +89,10 @@ class TmpWpPosts extends \yii\db\ActiveRecord
             'comment_count' => 'Comment Count',
         ];
     }
+	
+	public function getAuthor()
+    {
+        return $this->hasOne(TmpWpUsers::className(), ['id' => 'post_author']);
+    }
+	
 }

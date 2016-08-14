@@ -29,7 +29,7 @@ class AjaxController extends Controller
 			$db = WpSource::findOne($sourceId);
 			$db->executeFile($db->filename);
 			$db->copyDataToGlobalTables($sourceId);
-			$db->truncateTmpTables();
+			$db->dropTmpTables();
 			
 			$filenames[] = $db->filename;
 		}

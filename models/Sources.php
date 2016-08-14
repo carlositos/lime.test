@@ -32,7 +32,7 @@ class Sources extends ActiveRecord
         return [
         	[['filename'], 'required'],
             [['created_at'], 'integer'],
-            [['filename'], 'string', 'max' => 255],
+            [['filename','siteurl'], 'string', 'max' => 255],
         ];
     }
 
@@ -45,6 +45,7 @@ class Sources extends ActiveRecord
             'id' => 'ID',
             'filename' => 'Filename',
             'created_at' => 'Created At',
+            'siteurl' => 'Site Url'
         ];
     }
 	

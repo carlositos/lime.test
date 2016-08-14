@@ -9,6 +9,9 @@ use app\models\SourcesSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use app\models\wordpress\GlobalWpPosts;
+use app\models\wordpress\GlobalWpPostmeta;
+
 class ParserController extends Controller
 {
 	
@@ -60,7 +63,10 @@ class ParserController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+		GlobalWpPosts::deleteAll(['source_id'=>$id]);
+		GlobalWpPostmeta::deleteAll(['source_id'=>$id]);
+		unlink(Yii::$app->params['sqlFilesStorage'].'/' . Sources::findOne($id)->filename . '.sql');
+		$this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
@@ -80,5 +86,9 @@ class ParserController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-
+	
+	public function actionTest()
+	{
+		
+	}
 }
