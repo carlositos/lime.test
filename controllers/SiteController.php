@@ -20,14 +20,7 @@ class SiteController extends Controller
 	public function actionRss($id)
 	{
 		$source = Sources::find()->where(['id'=>$id])->one();
-		
-		// set more namespaces if you need them
-		$xmlns = 'xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
-				xmlns:content="http://purl.org/rss/1.0/modules/content/"
-				xmlns:wfw="http://wellformedweb.org/CommentAPI/"
-				xmlns:dc="http://purl.org/dc/elements/1.1/"
-				xmlns:wp="http://wordpress.org/export/1.2/"';
-		 
+				 
 		// configure appropriately
 		$aChannel = [
 		  "title" => $source->filename,
@@ -35,10 +28,27 @@ class SiteController extends Controller
 		  "description" => "Blog",
 		  "language" => Yii::$app->language
 		];
-		$rss = new RssFeed($source->id, $xmlns, $aChannel);
+		$rss = new RssFeed([$source->id], $aChannel);
 		
 		header('Content-type: text/xml');
 		header('Content-Disposition: attachment; filename="'.str_replace('http://', '', $source->siteurl).'.xml"');
+		
+		echo $rss->createFeed();
+	}
+	
+	public function actionRssOne($ids)
+	{				 
+		// configure appropriately
+		$aChannel = [
+		  "title" => Yii::$app->name,
+		  "link" => Url::toRoute('/', true),
+		  "description" => "Blogs",
+		  "language" => Yii::$app->language
+		];
+		$rss = new RssFeed(explode(",", urldecode($ids)), $aChannel);
+		
+		header('Content-type: text/xml');
+		header('Content-Disposition: attachment; filename="general.xml"');
 		
 		echo $rss->createFeed();
 	}

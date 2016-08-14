@@ -38,7 +38,13 @@ $this->title = 'WP sql db to RSS';
 		?>
 		
 		<div class="pull-right">
-			<a href="#" id="generateFiles" class="btn btn-primary">
+			
+			<a href="#" class="btn btn-primary generateFiles" data-onefile="1">
+				<i class="glyphicon glyphicon-download-alt"></i>
+				Generate as one xml file
+			</a>
+			
+			<a href="#" class="btn btn-primary generateFiles" data-onefile="0">
 				<i class="glyphicon glyphicon-download-alt"></i>
 				Generate XML files
 			</a>
@@ -51,8 +57,9 @@ $this->title = 'WP sql db to RSS';
 $this->registerJs("
     $(document).ready(function(){
     	
-    	$('#generateFiles').click(function(){
+    	$('.generateFiles').click(function(){
     		var keys = $('#w0').yiiGridView('getSelectedRows');
+    		var onefile = $(this).data('onefile');
     		
     		if(keys.length == 0)
     		{
@@ -63,7 +70,7 @@ $this->registerJs("
     		$.ajax({
 			  type: 'POST',
 		      url: '/ajax/generate-xml-links',
-		      data: {keys: keys},
+		      data: {keys: keys, onefile: onefile},
 		      beforeSend: function(){
 		      	  $('#w0').showLoading()
 			  },

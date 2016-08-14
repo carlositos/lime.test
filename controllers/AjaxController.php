@@ -22,6 +22,7 @@ class AjaxController extends Controller
 	{
 		$this->layout = false;
 		$keys = Yii::$app->request->post('keys');
+		$onefile = Yii::$app->request->post('onefile');
 		$siteUrls = [];
 		
 		foreach($keys as $sourceId)
@@ -31,10 +32,12 @@ class AjaxController extends Controller
 			$db->copyDataToGlobalTables($sourceId);
 			$db->dropTmpTables();
 			
-			$siteUrls[$sourceId] = $db->siteurl;
+			$siteUrls[$sourceId] = WpSource::findOne($sourceId)->siteurl;
 		}
 		
-		return $this->render('_xmlListing', ['siteUrls' => $siteUrls]);
+		$ajaxTemplate = ($onefile == 0) ? '_xmlListing' : '_oneXmlLink';
+		
+		return $this->render($ajaxTemplate, ['siteUrls' => $siteUrls]);
 	}
 	
 }

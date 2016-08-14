@@ -51,6 +51,21 @@ class WpSource extends Sources
 				$newPost->save();
 			}
 		}
+
+		//@commented, not a good decision. @TODO
+		/*$metas = TmpWpPostmeta::find()->all();
+		foreach ($metas as $oldMeta) {
+			
+				$newMeta = new GlobalWpPostmeta();
+				$newMeta->post_id = $oldMeta->post_id;
+				$newMeta->source_id = $sourceId;
+				$newMeta->meta_id = $oldMeta->meta_id;
+				$newMeta->meta_key = $oldMeta->meta_key;
+				$newMeta->meta_value = $oldMeta->meta_value;
+				
+				$newMeta->save();
+			
+		}*/
 	}
 	
 	private function updateData($sourceId, $siteUrl)
