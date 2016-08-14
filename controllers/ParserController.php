@@ -86,9 +86,4 @@ class ParserController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-	
-	public function actionTest()
-	{
-		print_r(GlobalWpPosts::find()->count());
-	}
 }
