@@ -74,7 +74,7 @@ class Sources extends ActiveRecord
 		foreach ($lines as $line)
 		{
 			// Skip it if it's a comment
-			if (substr($line, 0, 2) == '--' || $line == '')
+			if ($this->skipLine($line))
 			    continue;
 			
 			// Add this line to the current segment
@@ -89,5 +89,10 @@ class Sources extends ActiveRecord
 			    $templine = '';
 			}
 		}
+	}
+	
+	private function skipLine($line)
+	{
+	    return (substr($line, 0, 2) == '--' || $line == '' || strstr($line,'CREATE DATABASE') || strstr($line,'USE'));
 	}
 }

@@ -8,9 +8,6 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\wordpress\WpSource;
 
-/**
- * SourceController implements the CRUD actions for Sources model.
- */
 class AjaxController extends Controller
 {
 	/**
