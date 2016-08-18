@@ -24,9 +24,12 @@ class UploadForm extends Model
         if ($this->validate()) { 
             foreach ($this->sqlFiles as $file) {
                 $file->saveAs(Yii::$app->params['sqlFilesStorage'].'/' . $file->baseName . '.' . $file->extension);
-				$source = new Sources();
-				$source->filename = $file->baseName;
-				$source->save();
+				if(!Sources::find()->where(['filename'=>$file->baseName])->exists())
+				{
+				    $source = new Sources();
+				    $source->filename = $file->baseName;
+				    $source->save();
+				}   
             }
             return true;
         } else {
