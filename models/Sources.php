@@ -93,6 +93,6 @@ class Sources extends ActiveRecord
 	
 	private function skipLine($line)
 	{
-	    return (substr($line, 0, 2) == '--' || $line == '' || strstr($line,'CREATE DATABASE') || strstr($line,'USE'));
+	    return (substr($line, 0, 2) == '--' || $line == '' || strstr($line,'CREATE DATABASE') || strstr($line,'USE `'));
 	}
 }
